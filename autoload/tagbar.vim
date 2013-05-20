@@ -3251,7 +3251,12 @@ function! s:EscapeCtagsCmd(ctags_bin, args, ...) abort
 
     if exists('+shellslash')
         let shellslash_save = &shellslash
-        set noshellslash
+        "modified by showgood
+        "in order to make tagbar work with speical configuration
+        "which is "vimshell(https://code.google.com/p/vimshell/) + cygwin" on window
+        if g:use_cygwin==0
+            set noshellslash
+        endif
     endif
 
     "Set up 0th argument of ctags_cmd
@@ -3341,10 +3346,15 @@ function! s:ExecuteCtags(ctags_cmd) abort
 
     if exists('+shellslash')
         let shellslash_save = &shellslash
-        set noshellslash
+        "modified by showgood
+        "in order to make tagbar work with speical configuration
+        "which is "vimshell(https://code.google.com/p/vimshell/) + cygwin" on window
+        if g:use_cygwin==0
+            set noshellslash
+        endif
     endif
 
-    if &shell =~ 'cmd\.exe'
+    if &shell =~ 'cmd\.exe' && g:use_cygwin == 0
         let shellxquote_save = &shellxquote
         set shellxquote=\"
         let shellcmdflag_save = &shellcmdflag
@@ -3353,7 +3363,7 @@ function! s:ExecuteCtags(ctags_cmd) abort
 
     let ctags_output = system(a:ctags_cmd)
 
-    if &shell =~ 'cmd\.exe'
+    if &shell =~ 'cmd\.exe' && g:use_cygwin == 0
         let &shellxquote  = shellxquote_save
         let &shellcmdflag = shellcmdflag_save
     endif
